@@ -9,6 +9,9 @@ Useful alias to toggle on/off
 alias -g togglesound="home;run Bitburner-Sounds.js"
 ```
 
+Showcase script for beep music for the lolz https://pastebin.com/Kq9EzDEM
+
+
 ```js
     sound.bell()
     sound.speak('Hello World')
