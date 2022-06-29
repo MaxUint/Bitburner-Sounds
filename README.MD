@@ -1,38 +1,43 @@
+Useful alias to toggle on/off
+```
 alias -g togglesound="home;run Bitburner-Sounds.js"
+```
 
-
-
-import { sound } from 'Bitburner-Sounds.js'
-
-sound.bell()
-sound.speak('Hello World')
-sound.bell().speak('Chaining is possible but will occur all at once')
-sound.beep()
-sound.beep().speak('This is text to speach')
-
-sound.beep options examples
-sound.beep({freq : 500})
-sound.beep({duration : 1000})
-sound.beep({type : 'sine'})
-sound.beep({gain : 0.2})
-
-All are optional, you can declare a specific beep like this
-
-const lowTone = {freq : 420, type : 'sine', gain: 1}
-sound.beep(lowTone)
-
-const quiteLongHighTone = {freq : 840, gain: 0.1, duration : 5000}
-sound.beep(quiteLongHighTone).speak('Playing quite long high tone')
-
-
-
-
-An example of making some chords!
-
+```
 import { sound } from 'Bitburner-Sounds.js'
 /** @param {NS} ns */
 export async function main(ns) {
-    sound.speak('Bitburner sounds initializing')
+    sound.bell()
+    sound.speak('Hello World')
+    sound.bell().speak('Chaining is possible but will occur all at once')
+    sound.beep()
+    sound.beep().speak('This is text to speach')
+    sound.beep options examples
+    sound.beep({freq : 500})
+    sound.beep({duration : 1000})
+    sound.beep({type : 'sine'})
+    sound.beep({gain : 0.2})
+}
+```
+
+All are optional, you can declare a specific beep like this
+
+```
+import { sound } from 'Bitburner-Sounds.js'
+/** @param {NS} ns */
+export async function main(ns) {
+    const lowTone = {freq : 420, type : 'sine', gain: 1}
+    sound.beep(lowTone)
+    const quiteLongHighTone = {freq : 840, gain: 0.1, duration : 5000}
+    sound.beep(quiteLongHighTone).speak('Playing quite long high tone')
+}
+```
+
+an example of making some chords!
+```
+import { sound } from 'Bitburner-Sounds.js'
+/** @param {NS} ns */
+export async function main(ns) {
     function playChord(tone) {
         const low = {freq : tone, duration : 50, type : 'square' , gain : 0.1}
         const middle = {freq : tone*1.3, duration : 50, type : 'square', gain : 0.1}
@@ -46,8 +51,5 @@ export async function main(ns) {
     globalThis['setTimeout'](()=>{
         for(let chord of chords) globalThis['setTimeout'](()=>{ playChord(chord); }, (delay+=100))
     }, 2000)
-    
 }
-
-
-
+```
