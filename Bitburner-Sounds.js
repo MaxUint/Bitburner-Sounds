@@ -11,7 +11,7 @@
 /* GAINS DECIMAL 0 - 1 */
 const musicGain = 1
 const fadeOutOnUnFocus = true
-const fadeOutSpeed = .0001
+const fadeOutSpeed = .001
 const serverRackFansGain = 1
 const dialUpTonesGain = 1
 const terminalTyperWriterGain = 1
@@ -185,6 +185,7 @@ export const sound = {timeout : 0}
 
 sound.speak = (string) => { 
     let utterance = new SpeechSynthesisUtterance(string)
+    utterance.pitch = 0
     speechSynthesis.speak(utterance)
     return sound
 }
@@ -218,6 +219,7 @@ sound.beep = ({freq, type, duration, gain} = {}) => {
     if(!type) type = 'sine'
     if(!duration) duration = 50
     if(!gain) gain = 0.5
+    freq = Math.round(freq)
     globalThis['beepContexts'] = globalThis['beepContexts'] ?? {}
     if(!globalThis['beepContexts'][[freq, type]]) {
         let context = new (globalThis['window'].AudioContext ?? globalThis['window'].webkitAudioContext)()
