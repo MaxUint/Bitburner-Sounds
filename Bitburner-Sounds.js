@@ -9,7 +9,7 @@
 
 /* SETTINGS */
 /* GAINS DECIMAL 0 - 1 */
-const musicGain = .333
+const musicGain = .15
 const fadeOutOnUnFocus = true
 const fadeOutSpeed = .00025
 const serverRackFansGain = 1
