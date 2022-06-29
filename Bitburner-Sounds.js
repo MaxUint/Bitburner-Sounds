@@ -233,8 +233,8 @@ sound.beep = ({freq, type, duration, gain} = {}) => {
     }
     
     globalThis['beepContexts'][[freq, type]].gain.value = gain
-   
-    globalThis['setTimeout'](()=>{
+    globalThis['clearTimeout'](globalThis['beepContexts'][[freq, type]].timeout)
+    globalThis['beepContexts'][[freq, type]].timeout = globalThis['setTimeout'](()=>{
         globalThis['beepContexts'][[freq, type]].gain.value = 0
     }, duration)
 
