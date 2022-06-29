@@ -1,5 +1,7 @@
 To use: nano Bitburner-Sounds.js and copy the Bitburner-Sounds.js file from this github
 
+Running Bitburner-Sounds.js enables UI Sounds, Server rack atmosphere sound, & in-game music, importing sound from Bitburner-Sounds.js allows to use sound effects inside other scripts as examples follow bellow
+
 !!! YOU DO NOT NEED TO COPY THE SOUNDS FOLDER !!!
 
 Useful alias to toggle on/off
