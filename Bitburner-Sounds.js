@@ -9,7 +9,7 @@
 
 /* SETTINGS */
 /* GAINS DECIMAL 0 - 1 */
-const musicGain = 0.35
+const musicGain = .333
 const fadeOutOnUnFocus = true
 const fadeOutSpeed = .00025
 const serverRackFansGain = 1
@@ -158,15 +158,16 @@ export async function main(ns) {
     }
 
     setInterval(BitburnerSounds.bindEnforcer, 100)
+    await BitburnerSounds.play(BitburnerSounds.urlMap.URL_DIALUP, 0.5)
+    await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_CYBER, 0.5)
     await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_SERVER_RACK, 0.7 * serverRackFansGain)
     await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_SERVER_FANS, 0.25 * serverRackFansGain)
     await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_TYPING, 0)
-    await BitburnerSounds.play(BitburnerSounds.urlMap.URL_DIALUP, 0.1)
     await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_SERVER_AIR, 0.3 * serverRackFansGain)
-    await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_SONG, (1/6) * musicGain)
-	await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_CYBER, 0.5)
+    await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_SONG, musicGain)
+	
 
-    setInterval(()=>{BitburnerSounds.play(BitburnerSounds.urlMap.URL_DIALUP, 0.1 * dialUpTonesGain)}, 1000*60*3)
+    setInterval(()=>{BitburnerSounds.play(BitburnerSounds.urlMap.URL_DIALUP, 0.5 * dialUpTonesGain)}, 1000*60*3)
 	
   
 
@@ -181,7 +182,7 @@ export async function main(ns) {
         if(BitburnerSounds.gainSlide >= 1) BitburnerSounds.gainSlide = 1
         if(BitburnerSounds.gainSlide <= .01) BitburnerSounds.gainSlide = .01
         BitburnerSounds.masterGain.gain.value = BitburnerSounds.gainSlide
-        BitburnerSounds.gainNodes[BitburnerSounds.urlMap.URL_SONG].gain.value = (BitburnerSounds.gainSlide/6) * musicGain
+        BitburnerSounds.gainNodes[BitburnerSounds.urlMap.URL_SONG].gain.value = BitburnerSounds.gainSlide * musicGain
     }, 50)
 }
 
