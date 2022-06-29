@@ -57,6 +57,7 @@ export async function main(ns) {
     urlMap['URL_SERVER_FANS'] = 'https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/server_fans.mp3'
     urlMap['URL_LONGCLICK'] = 'https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/longclick.mp3'
     urlMap['URL_POP'] = 'https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/pop.mp3'
+	urlMap['URL_CYBER'] = 'https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/cyberroom.mp3'
 
     globalThis.BitburnerSounds ??= ({disabled : false, gainNodes : {}, cache : {}, isTyping : 0, typewriteTimeout : 0}) 
     
@@ -163,6 +164,7 @@ export async function main(ns) {
     await BitburnerSounds.play(BitburnerSounds.urlMap.URL_DIALUP, 0.1)
     await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_SERVER_AIR, 0.3 * serverRackFansGain)
     await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_SONG, (1/6) * musicGain)
+	await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_CYBER, 0.5)
 
     setInterval(()=>{BitburnerSounds.play(BitburnerSounds.urlMap.URL_DIALUP, 0.1 * dialUpTonesGain)}, 1000*60*3)
 	
