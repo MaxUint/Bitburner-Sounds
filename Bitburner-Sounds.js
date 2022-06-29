@@ -58,126 +58,128 @@ export async function main(ns) {
     urlMap['URL_LONGCLICK'] = 'https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/longclick.mp3'
     urlMap['URL_POP'] = 'https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/pop.mp3'
 
-    globalThis.BitburnerSounds = globalThis?.BitburnerSounds ?? ({disabled : false, gainNodes : {}, cache : {}, isTyping : 0, typewriteTimeout : 0}) 
+    globalThis.BitburnerSounds ??= ({disabled : false, gainNodes : {}, cache : {}, isTyping : 0, typewriteTimeout : 0}) 
     
-    globalThis.BitburnerSounds.urlMap = urlMap
+    BitburnerSounds.urlMap = urlMap
     
-    if(globalThis.BitburnerSounds?.AudioContext?.state != undefined) {
-        let isOn = globalThis.BitburnerSounds.AudioContext.state == 'running'
-        globalThis.BitburnerSounds.isOn = !isOn
-        globalThis.BitburnerSounds.AudioContext[(isOn?'suspend':'resume')]()
+    if(BitburnerSounds?.AudioContext?.state != undefined) {
+        let isOn = BitburnerSounds.AudioContext.state == 'running'
+        BitburnerSounds.isOn = !isOn
+        BitburnerSounds.AudioContext[(isOn?'suspend':'resume')]()
         return ns.tprint(`${isOn?'WARN:':'INFO'} Bitburner-Sounds ${isOn ? 'paused' : 'resumed'}`)
     }
     
     ns.tprint('INFO: INITIALIZING SOUNDS')
 
-    globalThis.BitburnerSounds.isOn = true
+    let newAudioContext = () => new (globalThis?.AudioContext ?? globalThis?.webkitAudioContext)() 
 
-    globalThis.BitburnerSounds.AudioContext = new (globalThis['window']?.AudioContext ?? globalThis['window']?.webkitAudioContext)()
-    globalThis.BitburnerSounds.masterGain = globalThis.BitburnerSounds.AudioContext.createGain()
-    globalThis.BitburnerSounds.masterGain.gain.value = 1
-    globalThis.BitburnerSounds.masterGain['connect'](globalThis.BitburnerSounds.AudioContext.destination)
+    BitburnerSounds.isOn = true
 
-    globalThis.BitburnerSounds.play = async (url, gain = 1) => {
+    BitburnerSounds.AudioContext = newAudioContext()
+    BitburnerSounds.masterGain = BitburnerSounds.AudioContext.createGain()
+    BitburnerSounds.masterGain.gain.value = 1
+    BitburnerSounds.masterGain['connect'](BitburnerSounds.AudioContext.destination)
+
+    BitburnerSounds.play = async (url, gain = 1) => {
         gain *= masterGain
-        if(!globalThis.BitburnerSounds.isOn) return
-        if(globalThis.BitburnerSounds.cache[url] === undefined) {
+        if(!BitburnerSounds.isOn) return
+        if(BitburnerSounds.cache[url] === undefined) {
             let response = await fetch(url)
             let dataArray = await response.arrayBuffer()
-            let buffer = await globalThis.BitburnerSounds.AudioContext.decodeAudioData(dataArray)
-            globalThis.BitburnerSounds.gainNodes[url] = globalThis.BitburnerSounds.AudioContext.createGain()
-            globalThis.BitburnerSounds.gainNodes[url].gain.value = gain
-            globalThis.BitburnerSounds.gainNodes[url]['connect'](globalThis.BitburnerSounds.masterGain)
-            globalThis.BitburnerSounds.cache[url] = buffer
+            let buffer = await BitburnerSounds.AudioContext.decodeAudioData(dataArray)
+            BitburnerSounds.gainNodes[url] = BitburnerSounds.AudioContext.createGain()
+            BitburnerSounds.gainNodes[url].gain.value = gain
+            BitburnerSounds.gainNodes[url]['connect'](BitburnerSounds.masterGain)
+            BitburnerSounds.cache[url] = buffer
         }
-        let bufferSource = globalThis.BitburnerSounds.AudioContext.createBufferSource()
-        bufferSource.buffer = globalThis.BitburnerSounds.cache[url]
-        bufferSource['connect'](globalThis.BitburnerSounds.gainNodes[url])
+        let bufferSource = BitburnerSounds.AudioContext.createBufferSource()
+        bufferSource.buffer = BitburnerSounds.cache[url]
+        bufferSource['connect'](BitburnerSounds.gainNodes[url])
         bufferSource.start(0)
     }
 
-    globalThis.BitburnerSounds.loop = async(url, gain = 1) => {
+    BitburnerSounds.loop = async(url, gain = 1) => {
         gain *= masterGain
-        if(globalThis.BitburnerSounds.gainNodes[url]) {
+        if(BitburnerSounds.gainNodes[url]) {
             let isSilent = gainNodes[url].gain.value == 0
             gainNodes[url].gain.value = isSilent ? gain : 0
             return
         }
 
-        globalThis.BitburnerSounds.gainNodes[url] = globalThis.BitburnerSounds.AudioContext.createGain()
-        globalThis.BitburnerSounds.gainNodes[url].gain.value = gain
-        globalThis.BitburnerSounds.gainNodes[url]['connect'](globalThis.BitburnerSounds.masterGain)
-        let bufferSource = globalThis.BitburnerSounds.AudioContext.createBufferSource()
+        BitburnerSounds.gainNodes[url] = BitburnerSounds.AudioContext.createGain()
+        BitburnerSounds.gainNodes[url].gain.value = gain
+        BitburnerSounds.gainNodes[url]['connect'](BitburnerSounds.masterGain)
+        let bufferSource = BitburnerSounds.AudioContext.createBufferSource()
         let response = await fetch(url)
         let dataArray = await response.arrayBuffer()
-        let buffer = await globalThis.BitburnerSounds.AudioContext.decodeAudioData(dataArray)
+        let buffer = await BitburnerSounds.AudioContext.decodeAudioData(dataArray)
         bufferSource.buffer = buffer
         bufferSource.loop = true
-        bufferSource['connect'](globalThis.BitburnerSounds.gainNodes[url])
+        bufferSource['connect'](BitburnerSounds.gainNodes[url])
         bufferSource.start(0)
     }
 
-    globalThis.BitburnerSounds.terminalType = () => {
-        globalThis['clearTimeout'](globalThis.BitburnerSounds.typewriteTimeout)
-        globalThis.BitburnerSounds.gainNodes[globalThis.BitburnerSounds.urlMap.URL_TYPING].gain.value = 1 * terminalTyperWriterGain
-        globalThis['setTimeout'](globalThis.BitburnerSounds.terminalStopped, 100)
+    BitburnerSounds.terminalType = () => {
+        globalThis['clearTimeout'](BitburnerSounds.typewriteTimeout)
+        BitburnerSounds.gainNodes[BitburnerSounds.urlMap.URL_TYPING].gain.value = 1 * terminalTyperWriterGain
+        globalThis['setTimeout'](BitburnerSounds.terminalStopped, 100)
     }
 
-    globalThis.BitburnerSounds.bind2elements = (selector, sound, gain = 1) => {
+    BitburnerSounds.bind2elements = (selector, sound, gain = 1) => {
         for (const button of globalThis['document'].querySelectorAll(selector)) {
             if(button === undefined) continue
             if(button?.hasSound) continue
             button.addEventListener('click', ()=>{
-                globalThis.BitburnerSounds.play(sound, gain)
+                BitburnerSounds.play(sound, gain)
             })
             button.hasSound = true
         }
     }
 
-    globalThis.BitburnerSounds.terminalStopped = () => {
-        globalThis.BitburnerSounds.gainNodes[globalThis.BitburnerSounds.urlMap.URL_TYPING].gain.value = 0
+    BitburnerSounds.terminalStopped = () => {
+        BitburnerSounds.gainNodes[BitburnerSounds.urlMap.URL_TYPING].gain.value = 0
     }
     
-    globalThis.BitburnerSounds.bindEnforcer = () => {
+    BitburnerSounds.bindEnforcer = () => {
 
-        globalThis.BitburnerSounds.bind2elements('.MuiTouchRipple-root', globalThis.BitburnerSounds.urlMap.URL_SWIPE, 0.3)
-        globalThis.BitburnerSounds.bind2elements('.MuiListItem-button' , globalThis.BitburnerSounds.urlMap.URL_LONGCLICK, 0.2)
-        globalThis.BitburnerSounds.bind2elements('.MuiButton-sizeMedium', globalThis.BitburnerSounds.urlMap.URL_CLICK, 2)
-        globalThis.BitburnerSounds.bind2elements('div[role=button]', globalThis.BitburnerSounds.urlMap.URL_POP, 0.1)
-        globalThis.BitburnerSounds.bind2elements('button', globalThis.BitburnerSounds.urlMap.URL_POP, 0.1)
-        globalThis.BitburnerSounds.bind2elements('span[aria-label]', globalThis.BitburnerSounds.urlMap.URL_SWIPE, 0.3)
+        BitburnerSounds.bind2elements('.MuiTouchRipple-root', BitburnerSounds.urlMap.URL_SWIPE, 0.3)
+        BitburnerSounds.bind2elements('.MuiListItem-button' , BitburnerSounds.urlMap.URL_LONGCLICK, 0.2)
+        BitburnerSounds.bind2elements('.MuiButton-sizeMedium', BitburnerSounds.urlMap.URL_CLICK, 2)
+        BitburnerSounds.bind2elements('div[role=button]', BitburnerSounds.urlMap.URL_POP, 0.1)
+        BitburnerSounds.bind2elements('button', BitburnerSounds.urlMap.URL_POP, 0.1)
+        BitburnerSounds.bind2elements('span[aria-label]', BitburnerSounds.urlMap.URL_SWIPE, 0.3)
         
         let terminal = globalThis['document'].getElementById('terminal-input')
         if(!terminal) return
         if(terminal?.hasSounds) return
-        terminal.addEventListener('input', globalThis.BitburnerSounds.terminalType)
+        terminal.addEventListener('input', BitburnerSounds.terminalType)
         terminal.hasSounds = true
     }
 
-    globalThis['setInterval'](globalThis.BitburnerSounds.bindEnforcer, 100)
-    await globalThis.BitburnerSounds.loop(globalThis.BitburnerSounds.urlMap.URL_SERVER_RACK, 0.7 * serverRackFansGain)
-    await globalThis.BitburnerSounds.loop(globalThis.BitburnerSounds.urlMap.URL_SERVER_FANS, 0.25 * serverRackFansGain)
-    await globalThis.BitburnerSounds.loop(globalThis.BitburnerSounds.urlMap.URL_TYPING, 0)
-    await globalThis.BitburnerSounds.play(globalThis.BitburnerSounds.urlMap.URL_DIALUP, 0.1)
-    await globalThis.BitburnerSounds.loop(globalThis.BitburnerSounds.urlMap.URL_SERVER_AIR, 0.3 * serverRackFansGain)
-    await globalThis.BitburnerSounds.loop(globalThis.BitburnerSounds.urlMap.URL_SONG, (1/6) * musicGain)
+    globalThis['setInterval'](BitburnerSounds.bindEnforcer, 100)
+    await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_SERVER_RACK, 0.7 * serverRackFansGain)
+    await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_SERVER_FANS, 0.25 * serverRackFansGain)
+    await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_TYPING, 0)
+    await BitburnerSounds.play(BitburnerSounds.urlMap.URL_DIALUP, 0.1)
+    await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_SERVER_AIR, 0.3 * serverRackFansGain)
+    await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_SONG, (1/6) * musicGain)
 
-    globalThis['setInterval'](()=>{globalThis.BitburnerSounds.play(globalThis.BitburnerSounds.urlMap.URL_DIALUP, 0.1 * dialUpTonesGain)}, 1000*60*3)
+    globalThis['setInterval'](()=>{BitburnerSounds.play(BitburnerSounds.urlMap.URL_DIALUP, 0.1 * dialUpTonesGain)}, 1000*60*3)
 	
   
 
     ns.tprint('INFO: Bitburner-Sounds enabled')
 
 
-    globalThis.BitburnerSounds.gainSlide = 1
+    BitburnerSounds.gainSlide = 1
     if(fadeOutOnUnFocus) globalThis['setInterval'](()=>{
         
         let focus = globalThis['document'].hasFocus() 
-        globalThis.BitburnerSounds.gainSlide += focus ? .1 : -fadeOutSpeed
-        if(globalThis.BitburnerSounds.gainSlide >= 1) globalThis.BitburnerSounds.gainSlide = 1
-        if(globalThis.BitburnerSounds.gainSlide <= .01) globalThis.BitburnerSounds.gainSlide = .01
-        globalThis.BitburnerSounds.masterGain.gain.value = globalThis.BitburnerSounds.gainSlide
-        globalThis.BitburnerSounds.gainNodes[globalThis.BitburnerSounds.urlMap.URL_SONG].gain.value = (globalThis.BitburnerSounds.gainSlide/6) * musicGain
+        BitburnerSounds.gainSlide += focus ? .1 : -fadeOutSpeed
+        if(BitburnerSounds.gainSlide >= 1) BitburnerSounds.gainSlide = 1
+        if(BitburnerSounds.gainSlide <= .01) BitburnerSounds.gainSlide = .01
+        BitburnerSounds.masterGain.gain.value = BitburnerSounds.gainSlide
+        BitburnerSounds.gainNodes[BitburnerSounds.urlMap.URL_SONG].gain.value = (BitburnerSounds.gainSlide/6) * musicGain
     }, 50)
 }
 
@@ -193,24 +195,24 @@ sound.bell = () => { sound.makeSound("https://freesound.org/data/previews/299/29
 sound.click = () => { sound.makeSound('https://cdn.freesound.org/previews/243/243772_3255970-lq.mp3'); return sound }
 
 sound.makeSound = async (soundUrl, loop = false) => { 
-    if(!globalThis?.audioCache) globalThis.audioCache = {}
-    if(!globalThis?.gAudioCtx) globalThis.gAudioCtx = new (globalThis['window'].AudioContext ?? globalThis['window'].webkitAudioContext)()
+    globalThis.audioCache ??= {}
+    globalThis.gAudioCtx ??= newAudioContext()
 
     globalThis['clearTimeout'](sound.timeout)
     sound.timeout = globalThis['setTimeout'](()=> {
-        globalThis.gAudioCtx = new (globalThis['window'].AudioContext ?? globalThis['window'].webkitAudioContext)()
+        gAudioCtx = newAudioContext()
     }, 1000) //refresh audio context to reduce potential jitter after lots of buffers
 
-    let bufferSource = globalThis.gAudioCtx.createBufferSource()
-    if(!globalThis.audioCache[soundUrl]) {
+    let bufferSource = gAudioCtx.createBufferSource()
+    if(!audioCache[soundUrl]) {
         let response = await fetch(soundUrl)
         let dataArray = await response.arrayBuffer()
-        let buffer = await globalThis.gAudioCtx.decodeAudioData(dataArray)
-        globalThis.audioCache[soundUrl] = buffer
+        let buffer = await gAudioCtx.decodeAudioData(dataArray)
+        audioCache[soundUrl] = buffer
     }
-    bufferSource.buffer = globalThis.audioCache[soundUrl]
+    bufferSource.buffer = audioCache[soundUrl]
     bufferSource.loop = loop
-    bufferSource['connect'](globalThis.gAudioCtx.destination)
+    bufferSource['connect'](gAudioCtx.destination)
     bufferSource.start(0)
 } 
 
@@ -218,26 +220,26 @@ sound.beep = ({freq = 800, type = 'sine', duration = 50, gain = 0.5} = {}) => {
     console.log(freq)
     if(!isFinite(freq)) return console.error('none finite freq')
     freq = Math.round(freq)
-    globalThis['beepChannels'] ??= {}
-    globalThis['beepContext'] = globalThis['beepContext'] ?? new (globalThis['window'].AudioContext ?? globalThis['window'].webkitAudioContext)()
-    if(!globalThis['beepChannels'][[freq, type]]) {
-        let oscillator = globalThis['beepContext'].createOscillator()
-        let gainNode = globalThis['beepContext'].createGain()
-        gainNode['connect'](globalThis['beepContext'].destination)
+    globalThis.beepChannels ??= {}
+    globalThis.beepContext ??= newAudioContext()
+    if(!beepChannels[[freq, type]]) {
+        let oscillator = beepContext.createOscillator()
+        let gainNode = beepContext.createGain()
+        gainNode['connect'](beepContext.destination)
         oscillator.type = type
         oscillator.frequency.value = freq
         oscillator['connect'](gainNode)
         gainNode.gain.value = 0
         oscillator.start(0)
-        globalThis['beepChannels'][[freq, type]] = gainNode
+        beepChannels[[freq, type]] = gainNode
     }
-    globalThis['beepChannels'][[freq, type]].gain.value = 0
+    beepChannels[[freq, type]].gain.value = 0
     globalThis['setTimeout'](()=>{
-        globalThis['beepChannels'][[freq, type]].gain.value = gain
+        beepChannels[[freq, type]].gain.value = gain
     }, duration>=100?50:0)
-    globalThis['clearTimeout'](globalThis['beepChannels'][[freq, type]].timeout)
-    globalThis['beepChannels'][[freq, type]].timeout = globalThis['setTimeout'](()=>{
-        globalThis['beepChannels'][[freq, type]].gain.value = 0
+    globalThis['clearTimeout'](beepChannels[[freq, type]].timeout)
+    beepChannels[[freq, type]].timeout = globalThis['setTimeout'](()=>{
+        beepChannels[[freq, type]].gain.value = 0
     }, duration)
 
     return sound
