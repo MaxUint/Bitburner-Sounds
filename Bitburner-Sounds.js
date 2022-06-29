@@ -9,9 +9,9 @@
 
 /* SETTINGS */
 /* GAINS DECIMAL 0 - 1 */
-const musicGain = 1
+const musicGain = 0.35
 const fadeOutOnUnFocus = true
-const fadeOutSpeed = .001
+const fadeOutSpeed = .00025
 const serverRackFansGain = 1
 const dialUpTonesGain = 1
 const terminalTyperWriterGain = 1
@@ -214,32 +214,30 @@ sound.makeSound = async (soundUrl, loop = false) => {
     bufferSource.start(0)
 } 
 
-sound.beep = ({freq, type, duration, gain} = {}) => {
-    if(!freq) freq = 800
-    if(!type) type = 'sine'
-    if(!duration) duration = 50
-    if(!gain) gain = 0.5
+sound.beep = ({freq = 800, type = 'sine', duration = 50, gain = 0.5} = {}) => {
+    console.log(freq)
+    if(!isFinite(freq)) return console.error('none finite freq')
     freq = Math.round(freq)
-    globalThis['beepContexts'] = globalThis['beepContexts'] ?? {}
-    if(!globalThis['beepContexts'][[freq, type]]) {
-        let context = new (globalThis['window'].AudioContext ?? globalThis['window'].webkitAudioContext)()
-        let oscillator = context.createOscillator()
-        let gainNode = context.createGain()
-        gainNode['connect'](context.destination)
+    globalThis['beepChannels'] ??= {}
+    globalThis['beepContext'] = globalThis['beepContext'] ?? new (globalThis['window'].AudioContext ?? globalThis['window'].webkitAudioContext)()
+    if(!globalThis['beepChannels'][[freq, type]]) {
+        let oscillator = globalThis['beepContext'].createOscillator()
+        let gainNode = globalThis['beepContext'].createGain()
+        gainNode['connect'](globalThis['beepContext'].destination)
         oscillator.type = type
         oscillator.frequency.value = freq
         oscillator['connect'](gainNode)
         gainNode.gain.value = 0
         oscillator.start(0)
-        globalThis['beepContexts'][[freq, type]] = gainNode
+        globalThis['beepChannels'][[freq, type]] = gainNode
     }
-    globalThis['beepContexts'][[freq, type]].gain.value = 0
+    globalThis['beepChannels'][[freq, type]].gain.value = 0
     globalThis['setTimeout'](()=>{
-        globalThis['beepContexts'][[freq, type]].gain.value = gain
+        globalThis['beepChannels'][[freq, type]].gain.value = gain
     }, duration>=100?50:0)
-    globalThis['clearTimeout'](globalThis['beepContexts'][[freq, type]].timeout)
-    globalThis['beepContexts'][[freq, type]].timeout = globalThis['setTimeout'](()=>{
-        globalThis['beepContexts'][[freq, type]].gain.value = 0
+    globalThis['clearTimeout'](globalThis['beepChannels'][[freq, type]].timeout)
+    globalThis['beepChannels'][[freq, type]].timeout = globalThis['setTimeout'](()=>{
+        globalThis['beepChannels'][[freq, type]].gain.value = 0
     }, duration)
 
     return sound
