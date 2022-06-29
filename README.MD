@@ -17,7 +17,7 @@ alias -g togglesound="home;run Bitburner-Sounds.js"
 
 All are optional, you can declare a specific beep like this
 
-```
+```js
 import { sound } from 'Bitburner-Sounds.js'
 /** @param {NS} ns */
 export async function main(ns) {
@@ -29,7 +29,7 @@ export async function main(ns) {
 ```
 
 an example of making some chords!
-```
+```js
 import { sound } from 'Bitburner-Sounds.js'
 /** @param {NS} ns */
 export async function main(ns) {
