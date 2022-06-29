@@ -1,3 +1,7 @@
+alias -g togglesound="home;run Bitburner-Sounds.js"
+
+
+
 import { sound } from 'Bitburner-Sounds.js'
 
 sound.bell()
