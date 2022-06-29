@@ -120,9 +120,9 @@ export async function main(ns) {
     }
 
     BitburnerSounds.terminalType = () => {
-        globalThis['clearTimeout'](BitburnerSounds.typewriteTimeout)
+        clearTimeout(BitburnerSounds.typewriteTimeout)
         BitburnerSounds.gainNodes[BitburnerSounds.urlMap.URL_TYPING].gain.value = 1 * terminalTyperWriterGain
-        globalThis['setTimeout'](BitburnerSounds.terminalStopped, 100)
+        setTimeout(BitburnerSounds.terminalStopped, 100)
     }
 
     BitburnerSounds.bind2elements = (selector, sound, gain = 1) => {
@@ -156,7 +156,7 @@ export async function main(ns) {
         terminal.hasSounds = true
     }
 
-    globalThis['setInterval'](BitburnerSounds.bindEnforcer, 100)
+    setInterval(BitburnerSounds.bindEnforcer, 100)
     await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_SERVER_RACK, 0.7 * serverRackFansGain)
     await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_SERVER_FANS, 0.25 * serverRackFansGain)
     await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_TYPING, 0)
@@ -164,7 +164,7 @@ export async function main(ns) {
     await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_SERVER_AIR, 0.3 * serverRackFansGain)
     await BitburnerSounds.loop(BitburnerSounds.urlMap.URL_SONG, (1/6) * musicGain)
 
-    globalThis['setInterval'](()=>{BitburnerSounds.play(BitburnerSounds.urlMap.URL_DIALUP, 0.1 * dialUpTonesGain)}, 1000*60*3)
+    setInterval(()=>{BitburnerSounds.play(BitburnerSounds.urlMap.URL_DIALUP, 0.1 * dialUpTonesGain)}, 1000*60*3)
 	
   
 
@@ -172,7 +172,7 @@ export async function main(ns) {
 
 
     BitburnerSounds.gainSlide = 1
-    if(fadeOutOnUnFocus) globalThis['setInterval'](()=>{
+    if(fadeOutOnUnFocus) setInterval(()=>{
         
         let focus = globalThis['document'].hasFocus() 
         BitburnerSounds.gainSlide += focus ? .1 : -fadeOutSpeed
@@ -198,8 +198,8 @@ sound.makeSound = async (soundUrl, loop = false) => {
     globalThis.audioCache ??= {}
     globalThis.gAudioCtx ??= newAudioContext()
 
-    globalThis['clearTimeout'](sound.timeout)
-    sound.timeout = globalThis['setTimeout'](()=> {
+    clearTimeout(sound.timeout)
+    sound.timeout = setTimeout(()=> {
         gAudioCtx = newAudioContext()
     }, 1000) //refresh audio context to reduce potential jitter after lots of buffers
 
@@ -234,11 +234,11 @@ sound.beep = ({freq = 800, type = 'sine', duration = 50, gain = 0.5} = {}) => {
         beepChannels[[freq, type]] = gainNode
     }
     beepChannels[[freq, type]].gain.value = 0
-    globalThis['setTimeout'](()=>{
+    setTimeout(()=>{
         beepChannels[[freq, type]].gain.value = gain
     }, duration>=100?50:0)
-    globalThis['clearTimeout'](beepChannels[[freq, type]].timeout)
-    beepChannels[[freq, type]].timeout = globalThis['setTimeout'](()=>{
+    clearTimeout(beepChannels[[freq, type]].timeout)
+    beepChannels[[freq, type]].timeout = setTimeout(()=>{
         beepChannels[[freq, type]].gain.value = 0
     }, duration)
 
