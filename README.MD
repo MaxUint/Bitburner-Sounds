@@ -3,7 +3,7 @@ Useful alias to toggle on/off
 alias -g togglesound="home;run Bitburner-Sounds.js"
 ```
 
-```
+```js
     sound.bell()
     sound.speak('Hello World')
     sound.bell().speak('Chaining is possible but will occur all at once')
