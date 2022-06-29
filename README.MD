@@ -4,20 +4,15 @@ alias -g togglesound="home;run Bitburner-Sounds.js"
 ```
 
 ```
-import { sound } from 'Bitburner-Sounds.js'
-/** @param {NS} ns */
-export async function main(ns) {
     sound.bell()
     sound.speak('Hello World')
     sound.bell().speak('Chaining is possible but will occur all at once')
-    sound.beep()
     sound.beep().speak('This is text to speach')
-    sound.beep options examples
+    //sound.beep options examples
     sound.beep({freq : 500})
     sound.beep({duration : 1000})
     sound.beep({type : 'sine'})
     sound.beep({gain : 0.2})
-}
 ```
 
 All are optional, you can declare a specific beep like this
