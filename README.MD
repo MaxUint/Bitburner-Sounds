@@ -1,4 +1,5 @@
 To use: nano Bitburner-Sounds.js and copy the Bitburner-Sounds.js file from this github
+
 !!! YOU DO NOT NEED TO COPY THE SOUNDS FOLDER !!!
 
 Useful alias to toggle on/off
