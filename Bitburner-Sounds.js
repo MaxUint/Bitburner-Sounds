@@ -9,7 +9,7 @@
 
 /* SETTINGS */
 /* GAINS DECIMAL 0 - 1 */
-const musicGain = 0
+const musicGain = 1
 const fadeOutOnUnFocus = true
 const fadeOutSpeed = .0001
 const serverRackFansGain = 1
@@ -47,16 +47,16 @@ sound.beep(quiteLongHighTone).speak('Playing quite long high tone')
 /** @param {NS} ns */
 export async function main(ns) {
     const urlMap = {}
-    urlMap['URL_SONG']  = `https://storage.googleapis.com/genericcat-mymusic/Hypnocity%20Remaster.mp3`
-    urlMap['URL_CLICK'] = `https://cdn.freesound.org/previews/243/243772_3255970-lq.mp3`
-    urlMap['URL_SWIPE'] = 'https://cdn.freesound.org/previews/60/60013_71257-lq.mp3'
-    urlMap['URL_TYPING']  = 'https://cdn.freesound.org/previews/555/555437_12455765-lq.mp3'
-    urlMap['URL_DIALUP'] = 'https://cdn.freesound.org/previews/586/586442_13223871-lq.mp3'
-    urlMap['URL_SERVER_AIR'] =  'https://cdn.freesound.org/previews/212/212780_623488-lq.mp3'
-    urlMap['URL_SERVER_RACK'] = 'https://cdn.freesound.org/previews/536/536146_11923309-lq.mp3'
-    urlMap['URL_SERVER_FANS'] = 'https://cdn.freesound.org/previews/349/349689_2205380-lq.mp3'
-    urlMap['URL_LONGCLICK'] = 'https://cdn.freesound.org/previews/42/42943_50975-lq.mp3'
-    urlMap['URL_POP'] = 'https://cdn.freesound.org/previews/290/290485_5123851-lq.mp3'
+    urlMap['URL_SONG']  = `https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/HypnocityReverb.mp3`
+    urlMap['URL_CLICK'] = `https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/click.mp3`
+    urlMap['URL_SWIPE'] = 'https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/swipe.mp3'
+    urlMap['URL_TYPING']  = 'https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/typing.mp3'
+    urlMap['URL_DIALUP'] = 'https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/dialup.mp3'
+    urlMap['URL_SERVER_AIR'] =  'https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/server_air.mp3'
+    urlMap['URL_SERVER_RACK'] = 'https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/server_rack.mp3'
+    urlMap['URL_SERVER_FANS'] = 'https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/server_fans.mp3'
+    urlMap['URL_LONGCLICK'] = 'https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/longclick.mp3'
+    urlMap['URL_POP'] = 'https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/sounds/pop.mp3'
 
     globalThis.BitburnerSounds = globalThis?.BitburnerSounds ?? ({disabled : false, gainNodes : {}, cache : {}, isTyping : 0, typewriteTimeout : 0}) 
     
