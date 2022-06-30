@@ -72,7 +72,7 @@ export async function main(ns) {
     
     ns.tprint('INFO: INITIALIZING SOUNDS')
 
-    BitburnerSounds.newAudioContext = () => new (globalThis?.AudioContext ?? globalThis?.webkitAudioContext)() 
+    BitburnerSounds.newAudioContext = () => new (globalThis.AudioContext ?? globalThis.webkitAudioContext)() 
 
     BitburnerSounds.isOn = true
 
@@ -224,7 +224,7 @@ sound.beep = ({freq = 800, type = 'sine', duration = 50, gain = 0.5} = {}) => {
     if(!isFinite(freq)) return console.error('none finite freq')
     freq = Math.round(freq)
     globalThis.beepChannels ??= {}
-    globalThis.beepContext ??= new (globalThis?.AudioContext ?? globalThis?.webkitAudioContext)
+    globalThis.beepContext ??= new (globalThis.AudioContext ?? globalThis.webkitAudioContext)
     if(!beepChannels[[freq, type]]) {
         let oscillator = beepContext.createOscillator()
         let gainNode = beepContext.createGain()
