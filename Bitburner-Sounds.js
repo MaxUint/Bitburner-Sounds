@@ -72,11 +72,11 @@ export async function main(ns) {
     
     ns.tprint('INFO: INITIALIZING SOUNDS')
 
-    let newAudioContext = () => new (globalThis?.AudioContext ?? globalThis?.webkitAudioContext)() 
+    BitburnerSounds.newAudioContext = () => new (globalThis?.AudioContext ?? globalThis?.webkitAudioContext)() 
 
     BitburnerSounds.isOn = true
 
-    BitburnerSounds.AudioContext = newAudioContext()
+    BitburnerSounds.AudioContext = BitburnerSounds.newAudioContext()
     BitburnerSounds.masterGain = BitburnerSounds.AudioContext.createGain()
     BitburnerSounds.masterGain.gain.value = 1
     BitburnerSounds.masterGain['connect'](BitburnerSounds.AudioContext.destination)
@@ -199,11 +199,11 @@ sound.click = () => { sound.makeSound('https://cdn.freesound.org/previews/243/24
 
 sound.makeSound = async (soundUrl, loop = false) => { 
     globalThis.audioCache ??= {}
-    globalThis.gAudioCtx ??= newAudioContext()
+    globalThis.gAudioCtx ??= BitburnerSounds.newAudioContext()
 
     clearTimeout(sound.timeout)
     sound.timeout = setTimeout(()=> {
-        gAudioCtx = newAudioContext()
+        gAudioCtx = BitburnerSounds.newAudioContext()
     }, 1000) //refresh audio context to reduce potential jitter after lots of buffers
 
     let bufferSource = gAudioCtx.createBufferSource()
@@ -224,7 +224,7 @@ sound.beep = ({freq = 800, type = 'sine', duration = 50, gain = 0.5} = {}) => {
     if(!isFinite(freq)) return console.error('none finite freq')
     freq = Math.round(freq)
     globalThis.beepChannels ??= {}
-    globalThis.beepContext ??= newAudioContext()
+    globalThis.beepContext ??= new (globalThis?.AudioContext ?? globalThis?.webkitAudioContext)
     if(!beepChannels[[freq, type]]) {
         let oscillator = beepContext.createOscillator()
         let gainNode = beepContext.createGain()
