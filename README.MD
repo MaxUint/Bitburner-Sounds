@@ -1,4 +1,7 @@
-To use: nano Bitburner-Sounds.js and copy the Bitburner-Sounds.js file from this github
+```
+wget https://raw.githubusercontent.com/frogbean/Bitburner-Sounds/main/Bitburner-Sounds.js Bitburner-Sounds.js
+alias -g togglesound="home;run Bitburner-Sounds.js"
+```
 
 Running Bitburner-Sounds.js enables UI Sounds, Server rack atmosphere sound, & in-game music, importing sound from Bitburner-Sounds.js allows to use sound effects inside other scripts as examples follow bellow
 
